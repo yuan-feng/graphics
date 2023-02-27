@@ -268,7 +268,7 @@ TGAColor TGAImage::Get(int x, int y) {
                   bytes_per_pixel_);
 }
 
-bool TGAImage::Set(int x, int y, TGAColor c) {
+bool TGAImage::Set(int x, int y, const TGAColor& c) {
   if (!data_ || x < 0 || y < 0 || x >= width_ || y >= height_) {
     return false;
   }
