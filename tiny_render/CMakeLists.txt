@@ -15,6 +15,17 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-file(GLOB SOURCES *.h *.cpp)
+set(FILES
+  model.cpp
+  tga_image.cpp
+)
 
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_library(render
+  ${FILES}
+)
+
+add_executable(main_1_line main_1_line.cpp)
+target_link_libraries(main_1_line render)
+
+add_executable(main_2_triangle main_2_triangle.cpp)
+target_link_libraries(main_2_triangle render)
