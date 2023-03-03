@@ -29,3 +29,7 @@ target_link_libraries(main_1_line render)
 
 add_executable(main_2_triangle main_2_triangle.cpp)
 target_link_libraries(main_2_triangle render)
+
+add_executable(main_3_depth_buffer main_3_depth_buffer.cpp)
+target_link_libraries(main_3_depth_buffer render)
+

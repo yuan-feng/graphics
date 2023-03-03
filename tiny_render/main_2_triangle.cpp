@@ -1,5 +1,6 @@
 #include "tga_image.h"
 
+#include <array>
 #include <iostream>
 #include <memory>
 
@@ -85,6 +86,8 @@ void DrawTriangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image,
   }
 }
 
+#pragma warning(push)
+#pragma warning(disable : 4244)
 Vec3f GetBarycentricCoordinates(std::array<Vec2i, 3> pts, Vec2i P) {
   const Vec3f u =
       Vec3f(pts[2].x - pts[0].x, pts[1].x - pts[0].x, pts[0].x - P.x) ^
@@ -93,6 +96,7 @@ Vec3f GetBarycentricCoordinates(std::array<Vec2i, 3> pts, Vec2i P) {
     return Vec3f(-1, 1, 1);
   return Vec3f(1.f - (u.x + u.y) / u.z, u.y / u.z, u.x / u.z);
 }
+#pragma warning(pop)
 
 void DrawTriangle(std::array<Vec2i, 3> pts, TGAImage &image,
                   const TGAColor &color) {
@@ -138,7 +142,8 @@ int main(int argc, char **argv) {
     for (int j = 0; j < 3; j++) {
       Vec3f v = model->vert(face[j]);
       screen_coords[j] =
-          Vec2i((v.x + 1.) * width / 2., (v.y + 1.) * height / 2.);
+          Vec2i(static_cast<int>((v.x + 1.) * width / 2.),
+              static_cast<int>((v.y + 1.) * height / 2.));
       world_coords[j] = v;
     }
     Vec3f n = (world_coords[2] - world_coords[0]) ^
@@ -146,9 +151,10 @@ int main(int argc, char **argv) {
     n.Normalize();
     float intensity = n * light_dir;
     if (intensity > 0) {
+      const auto intensity_v = static_cast<unsigned char>(intensity * 255);
       DrawTriangle(
           screen_coords[0], screen_coords[1], screen_coords[2], image,
-          TGAColor(intensity * 255, intensity * 255, intensity * 255, 255));
+                   TGAColor(intensity_v, intensity_v, intensity_v, 255));
     }
   }
   image.FlipVertically();
