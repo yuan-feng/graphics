@@ -6,45 +6,6 @@
 
 #include "model.h"
 
-const TGAColor kWhite = TGAColor(255, 255, 255, 255);
-const TGAColor kRed = TGAColor(255, 0, 0, 255);
-const TGAColor kGreen = TGAColor(0, 255, 0, 255);
-
-void DrawLine(const Vec2i &t0, const Vec2i &t1, TGAImage &image,
-              TGAColor color) {
-  int x0 = t0.x;
-  int y0 = t0.y;
-  int x1 = t1.x;
-  int y1 = t1.y;
-  bool steep = false;
-  if (std::abs(x0 - x1) < std::abs(y0 - y1)) {
-    std::swap(x0, y0);
-    std::swap(x1, y1);
-    steep = true;
-  }
-  if (x0 > x1) {
-    std::swap(x0, x1);
-    std::swap(y0, y1);
-  }
-  int dx = x1 - x0;
-  int dy = y1 - y0;
-  int derror2 = std::abs(dy) * 2;
-  int error2 = 0;
-  int y = y0;
-  for (int x = x0; x <= x1; x++) {
-    if (steep) {
-      image.Set(y, x, color);
-    } else {
-      image.Set(x, y, color);
-    }
-    error2 += derror2;
-    if (error2 > dx) {
-      y += (y1 > y0 ? 1 : -1);
-      error2 -= dx * 2;
-    }
-  }
-}
-
 void DrawTriangle(Vec2i t0, Vec2i t1, Vec2i t2, TGAImage &image,
                   const TGAColor &color) {
   if (t0.y > t1.y) {
@@ -141,9 +102,8 @@ int main(int argc, char **argv) {
     Vec3f world_coords[3];
     for (int j = 0; j < 3; j++) {
       Vec3f v = model->vert(face[j]);
-      screen_coords[j] =
-          Vec2i(static_cast<int>((v.x + 1.) * width / 2.),
-              static_cast<int>((v.y + 1.) * height / 2.));
+      screen_coords[j] = Vec2i(static_cast<int>((v.x + 1.) * width / 2.),
+                               static_cast<int>((v.y + 1.) * height / 2.));
       world_coords[j] = v;
     }
     Vec3f n = (world_coords[2] - world_coords[0]) ^
@@ -152,8 +112,7 @@ int main(int argc, char **argv) {
     float intensity = n * light_dir;
     if (intensity > 0) {
       const auto intensity_v = static_cast<unsigned char>(intensity * 255);
-      DrawTriangle(
-          screen_coords[0], screen_coords[1], screen_coords[2], image,
+      DrawTriangle(screen_coords[0], screen_coords[1], screen_coords[2], image,
                    TGAColor(intensity_v, intensity_v, intensity_v, 255));
     }
   }
