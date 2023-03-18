@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
   Vec3f light_dir(0, 0, -1); // define light_dir
 
   for (int i = 0; i < model->nfaces(); i++) {
-    std::vector<int> face = model->face(i);
+    std::vector<size_t> face = model->face(i);
     Vec2i screen_coords[3];
     Vec3f world_coords[3];
     for (int j = 0; j < 3; j++) {

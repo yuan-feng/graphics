@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
   constexpr const int height = 800;
   TGAImage image(width, height, TGAImage::RGB);
   for (int i = 0; i < model->nfaces(); i++) {
-    std::vector<int> face = model->face(i);
+    std::vector<size_t> face = model->face(i);
     for (int j = 0; j < 3; j++) {
       Vec3f v0 = model->vert(face[j]);
       Vec3f v1 = model->vert(face[(j + 1) % 3]);

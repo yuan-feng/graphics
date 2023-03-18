@@ -7,18 +7,20 @@
 class Model {
 private:
   std::vector<Vec3f> verts_;
-  std::vector<std::vector<int>> faces_;
+  std::vector<std::vector<Vec3i>> faces_;
+  std::vector<Vec2f> uv_;
 
 public:
   Model(const char *filename);
 
-  int nverts() { return (int)verts_.size(); }
+  std::vector<size_t> face(size_t idx) const;
+  Vec2f uv(size_t face_id, size_t vertex_id) const;
 
-  int nfaces() { return (int)faces_.size(); }
+  size_t nverts() const { return verts_.size(); }
 
-  std::vector<int> face(int idx) { return faces_[idx]; }
+  size_t nfaces() const { return faces_.size(); }
 
-  Vec3f vert(int i) { return verts_[i]; }
+  Vec3f vert(size_t i) { return verts_[i]; }
 };
 
 #endif // GRAPHICS_TINY_READER_MODEL_H_

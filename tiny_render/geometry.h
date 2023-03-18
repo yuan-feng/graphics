@@ -21,10 +21,21 @@ template <typename t> struct Vec2 {
   inline Vec2<t> operator+(const Vec2<t> &V) const {
     return Vec2<t>(u + V.u, v + V.v);
   }
+  inline Vec2<t> operator+=(const Vec2<t> &V) {
+    this->u += V.u;
+    this->v += V.v;
+    return *this;
+  }
   inline Vec2<t> operator-(const Vec2<t> &V) const {
     return Vec2<t>(u - V.u, v - V.v);
   }
   inline Vec2<t> operator*(float f) const { return Vec2<t>(u * f, v * f); }
+  inline Vec2<t> operator*(int f) const { return Vec2<t>(u * f, v * f); }
+  inline Vec2<t> operator*=(int f) {
+    this->u *= f;
+    this->v *= f;
+    return *this;
+  }
   inline t operator[](size_t i) const { return raw[i]; }
   inline t &operator[](size_t i) { return raw[i]; }
   template <typename>
@@ -56,12 +67,8 @@ template <typename t> struct Vec3 {
   inline Vec3<t> operator*(float f) const {
     return Vec3<t>(x * f, y * f, z * f);
   }
-  inline t operator[](size_t i) const {
-    return raw[i];
-  }
-  inline t& operator[](size_t i) {
-    return raw[i];
-  }
+  inline t operator[](size_t i) const { return raw[i]; }
+  inline t &operator[](size_t i) { return raw[i]; }
   inline t operator*(const Vec3<t> &v) const {
     return x * v.x + y * v.y + z * v.z;
   }
@@ -80,7 +87,8 @@ typedef Vec3<float> Vec3f;
 typedef Vec3<int> Vec3i;
 
 template <typename T> Vec3<T> cross(Vec3<T> v1, Vec3<T> v2) {
-  return Vec3<T>(v1.y*v2.z - v1.z*v2.y, v1.z*v2.x - v1.x*v2.z, v1.x*v2.y - v1.y*v2.x);
+  return Vec3<T>(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z,
+                 v1.x * v2.y - v1.y * v2.x);
 }
 
 template <typename t> std::ostream &operator<<(std::ostream &s, Vec2<t> &v) {

@@ -23,16 +23,37 @@ Model::Model(const char *filename) : verts_(), faces_() {
         iss >> v.raw[i];
       verts_.push_back(v);
     } else if (!line.compare(0, 2, "f ")) {
-      std::vector<int> f;
-      int itrash, idx;
+      std::vector<Vec3i> f;
+      Vec3i tmp;
       iss >> trash;
-      while (iss >> idx >> trash >> itrash >> trash >> itrash) {
-        idx--; // in wavefront obj all indices start at 1, not zero
-        f.push_back(idx);
+      while (iss >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
+        // in wavefront obj all indices start at 1, not zero
+        for (int i = 0; i < 3; ++i) {
+          tmp[i]--;
+        }
+        f.push_back(tmp);
       }
       faces_.push_back(f);
+    } else if (!line.compare(0, 3, "vt ")) {
+      iss >> trash >> trash;
+      Vec2f uv;
+      iss >> uv[0] >> uv[1];
+      uv_.push_back(uv);
     }
   }
   std::cout << "Loaded # v# " << verts_.size() << " f# " << faces_.size()
-            << std::endl;
+            << " vt# " << uv_.size() << std::endl;
+}
+
+std::vector<size_t> Model::face(size_t idx) const {
+  std::vector<size_t> ans;
+  ans.reserve(faces_[idx].size());
+  for (size_t i = 0; i < faces_[idx].size(); ++i) {
+    ans.push_back(faces_[idx][i][0]);
+  }
+  return ans;
+}
+
+Vec2f Model::uv(size_t face_id, size_t vertex_id) const {
+  return uv_[faces_[face_id][vertex_id][1]];
 }

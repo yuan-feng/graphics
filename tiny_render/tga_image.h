@@ -76,15 +76,15 @@ public:
   bool FlipHorizontally();
   bool FlipVertically();
   bool Scale(int w, int h);
-  TGAColor Get(int x, int y);
-  bool Set(int x, int y, const TGAColor& c);
+  TGAColor Get(int x, int y) const;
+  bool Set(int x, int y, const TGAColor &c);
   ~TGAImage();
   TGAImage &operator=(const TGAImage &img);
-  int width() { return width_; }
-  int height() { return height_; }
-  int bytes_per_pixel() { return bytes_per_pixel_; }
-  unsigned char *data() { return data_;}
+  int width() const { return width_; }
+  int height() const { return height_; }
+  int bytes_per_pixel() const { return bytes_per_pixel_; }
+  unsigned char *data() { return data_; }
   void Clear();
 };
 
-#endif //GRAPHICS_TINY_READER_TGA_IMAGE_H_
+#endif // GRAPHICS_TINY_READER_TGA_IMAGE_H_
