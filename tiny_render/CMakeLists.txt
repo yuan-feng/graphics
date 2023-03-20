@@ -16,6 +16,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(FILES
+  geometry.cpp
   model.cpp
   tga_image.cpp
 )
@@ -33,3 +34,5 @@ target_link_libraries(main_2_triangle render)
 add_executable(main_3_depth_buffer main_3_depth_buffer.cpp)
 target_link_libraries(main_3_depth_buffer render)
 
+add_executable(main_4_perspective_projection main_4_perspective_projection.cpp)
+target_link_libraries(main_4_perspective_projection render)

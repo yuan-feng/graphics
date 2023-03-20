@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <ostream>
+#include <vector>
 
 #pragma warning(push)
 #pragma warning(disable : 4244)
@@ -55,6 +56,7 @@ template <typename t> struct Vec3 {
   };
   Vec3() : x(0), y(0), z(0) {}
   Vec3(t _x, t _y, t _z) : x(_x), y(_y), z(_z) {}
+  template <typename u> Vec3<t>(const Vec3<u> &v);
   inline Vec3<t> operator^(const Vec3<t> &v) const {
     return Vec3<t>(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
   }
@@ -100,5 +102,26 @@ template <typename t> std::ostream &operator<<(std::ostream &s, Vec3<t> &v) {
   s << "(" << v.x << ", " << v.y << ", " << v.z << ")\n";
   return s;
 }
+
+constexpr int kDefaultSize = 4;
+
+class Matrix {
+public:
+  Matrix(int r = kDefaultSize, int c = kDefaultSize);
+  int nrows() { return rows; }
+  int ncols() { return cols; }
+
+  static Matrix Identity(int dimensions);
+  std::vector<float> &operator[](const int i);
+  Matrix operator*(const Matrix &a);
+  Matrix Transpose();
+  Matrix Inverse();
+
+  friend std::ostream &operator<<(std::ostream &s, Matrix &m);
+
+private:
+  std::vector<std::vector<float>> m;
+  int rows, cols;
+};
 
 #endif // GRAPHICS_TINY_READER_GEOMETRY_H_

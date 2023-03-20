@@ -32,7 +32,8 @@ struct TGAColor {
 
   TGAColor() : val(0), bytes_per_pixel(1) {}
 
-  TGAColor(unsigned char R, unsigned char G, unsigned char B, unsigned char A)
+  TGAColor(unsigned char R, unsigned char G, unsigned char B,
+           unsigned char A = 255)
       : b(B), g(G), r(R), a(A), bytes_per_pixel(4) {}
 
   TGAColor(int v, int bpp) : val(v), bytes_per_pixel(bpp) {}

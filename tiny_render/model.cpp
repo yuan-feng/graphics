@@ -43,6 +43,8 @@ Model::Model(const char *filename) : verts_(), faces_() {
   }
   std::cout << "Loaded # v# " << verts_.size() << " f# " << faces_.size()
             << " vt# " << uv_.size() << std::endl;
+
+  LoadTexture(filename, "_diffuse.tga", diffuse_map_);
 }
 
 std::vector<size_t> Model::face(size_t idx) const {
@@ -54,6 +56,25 @@ std::vector<size_t> Model::face(size_t idx) const {
   return ans;
 }
 
-Vec2f Model::uv(size_t face_id, size_t vertex_id) const {
-  return uv_[faces_[face_id][vertex_id][1]];
+void Model::LoadTexture(std::string filename, const char *suffix,
+                        TGAImage &img) {
+  std::string texfile(filename);
+  size_t dot = texfile.find_last_of(".");
+  if (dot != std::string::npos) {
+    texfile = texfile.substr(0, dot) + std::string(suffix);
+    std::cout << "Texture file " << texfile << " loading "
+              << (img.ReadTgaFile(texfile.c_str()) ? "ok" : "failed")
+              << std::endl;
+    img.FlipVertically();
+  }
+}
+
+TGAColor Model::Diffuse(const Vec2i &uv) const {
+  return diffuse_map_.Get(uv.x, uv.y);
+}
+
+Vec2i Model::uv(size_t face_id, size_t vertex_id) const {
+  const int idx = faces_[face_id][vertex_id][1];
+  return Vec2i(uv_[idx].x * diffuse_map_.width(),
+               uv_[idx].y * diffuse_map_.height());
 }

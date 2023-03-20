@@ -9,8 +9,8 @@
 #include <vector>
 
 namespace {
-constexpr const int width = 800;
-constexpr const int height = 800;
+constexpr const int kWidth = 800;
+constexpr const int kHeight = 800;
 } // namespace
 
 Vec3f GetBarycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P) {
@@ -27,9 +27,10 @@ Vec3f GetBarycentric(Vec3f A, Vec3f B, Vec3f C, Vec3f P) {
   return Vec3f(-1, 1, 1);
 }
 
-void DrawTriangle(const Vec3f *pts, std::array<float, width * height> &zbuffer,
-                  TGAImage &image, const TGAColor &color,
-                  const TGAImage *texture, const Vec2f *uv) {
+void DrawTriangle(const Vec3f *pts,
+                  std::array<float, kWidth * kHeight> &zbuffer, TGAImage &image,
+                  const TGAColor &color, const TGAImage *texture,
+                  const Vec2i *uv) {
   Vec2f bboxmin(std::numeric_limits<float>::max(),
                 std::numeric_limits<float>::max());
   Vec2f bboxmax(-std::numeric_limits<float>::max(),
@@ -50,16 +51,14 @@ void DrawTriangle(const Vec3f *pts, std::array<float, width * height> &zbuffer,
         continue;
       }
       P.z = 0;
-      Vec2f pixel_uv;
+      Vec2i pixel_uv;
       for (int i = 0; i < 3; i++) {
         P.z += pts[i][2] * barycentric_weight[i];
         pixel_uv += uv[i] * barycentric_weight[i];
       }
-      pixel_uv[0] *= texture->width();
-      pixel_uv[1] *= texture->height();
       TGAColor texture_color = texture->Get(pixel_uv[0], pixel_uv[1]);
-      if (zbuffer[int(P.x + P.y * width)] < P.z) {
-        zbuffer[int(P.x + P.y * width)] = P.z;
+      if (zbuffer[int(P.x + P.y * kWidth)] < P.z) {
+        zbuffer[int(P.x + P.y * kWidth)] = P.z;
         image.Set(P.x, P.y, texture_color);
       }
     }
@@ -67,8 +66,8 @@ void DrawTriangle(const Vec3f *pts, std::array<float, width * height> &zbuffer,
 }
 
 Vec3f WorldToScreen(Vec3f v) {
-  return Vec3f(int((v.x + 1.) * width / 2. + .5),
-               int((v.y + 1.) * height / 2. + .5), v.z);
+  return Vec3f(int((v.x + 1.) * kWidth / 2. + .5),
+               int((v.y + 1.) * kHeight / 2. + .5), v.z);
 }
 
 int main(int argc, char **argv) {
@@ -84,16 +83,16 @@ int main(int argc, char **argv) {
   }
   texture_image->FlipVertically();
 
-  std::array<float, width * height> zbuffer;
+  std::array<float, kWidth * kHeight> zbuffer;
   std::fill(zbuffer.begin(), zbuffer.end(), -std::numeric_limits<float>::max());
 
   Vec3f light_dir(0, 0, -1); // define light_dir
-  TGAImage image(width, height, TGAImage::RGB);
+  TGAImage image(kWidth, kHeight, TGAImage::RGB);
   for (int i = 0; i < model->nfaces(); i++) {
     std::vector<size_t> face = model->face(i);
     Vec3f screen_coords[3];
     Vec3f world_coords[3];
-    Vec2f uv[3];
+    Vec2i uv[3];
     for (int j = 0; j < 3; j++) {
       world_coords[j] = model->vert(face[j]);
       screen_coords[j] = WorldToScreen(world_coords[j]);
